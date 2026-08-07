@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FireAnt for Metakit/AmiBroker</title>
+  <meta
+    name="description"
+    content="Landing page FireAnt for Metakit/AmiBroker: dữ liệu lịch sử, realtime và dữ liệu mở rộng cho người dùng AmiBroker."
+  >
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="assets/logo/fireant-mark.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: "#fff1f2",
+              100: "#ffe0e4",
+              200: "#ffc5ce",
+              300: "#ff9cae",
+              400: "#ff6685",
+              500: "#f43f5e",
+              600: "#e11d48",
+              700: "#be123c",
+              800: "#9f1239",
+              900: "#881337"
+            },
+            ink: {
+              900: "#24121a",
+              800: "#4b1d2c",
+              700: "#6a3143"
+            },
+            paper: "#f5f9ff"
+          },
+          fontFamily: {
+            sans: ["Inter", "system-ui", "sans-serif"],
+            display: ["Space Grotesk", "Inter", "system-ui", "sans-serif"]
+          },
+          boxShadow: {
+            glow: "0 24px 60px -24px rgba(225, 29, 72, 0.35)",
+            soft: "0 18px 40px -24px rgba(75, 29, 44, 0.18)"
+          },
+          backgroundImage: {
+            "brand-gradient": "linear-gradient(135deg, #e11d48 0%, #ff6685 100%)"
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at top left, rgba(255, 102, 133, 0.12), transparent 26%),
+        radial-gradient(circle at top right, rgba(225, 29, 72, 0.14), transparent 24%),
+        #fff8f8;
+    }
+
+    .glass-stroke {
+      position: relative;
+    }
+
+    .glass-stroke::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(145deg, rgba(255, 102, 133, 0.55), rgba(225, 29, 72, 0.12), rgba(255, 255, 255, 0.7));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .hero-grid-columns {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: clamp(28px, 10vw, 120px) minmax(0, 1fr) clamp(28px, 10vw, 120px);
+      border-bottom: 1px solid rgba(190, 18, 60, 0.16);
+      pointer-events: none;
+    }
+
+    .hero-grid-columns > div:nth-child(2) {
+      border-left: 1px solid rgba(190, 18, 60, 0.16);
+      border-right: 1px solid rgba(190, 18, 60, 0.16);
+    }
+
+    .hero-row-lines {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      border-top: 1px solid rgba(190, 18, 60, 0.16);
+      width: 100vw;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .hero-row-lines > div {
+      border-bottom: 1px solid rgba(190, 18, 60, 0.16);
+    }
+
+    .hero-orbit-glow {
+      position: absolute;
+      left: 50%;
+      bottom: -20rem;
+      width: min(118rem, 138vw);
+      height: min(48rem, 62vw);
+      transform: translateX(-50%);
+      border-radius: 9999px 9999px 0 0;
+      background: radial-gradient(circle at 50% 18%, rgba(255, 244, 246, 0.99) 0%, rgba(255, 220, 227, 0.98) 16%, rgba(255, 170, 188, 0.88) 28%, rgba(225, 29, 72, 0.62) 42%, rgba(225, 29, 72, 0.14) 58%, rgba(255, 255, 255, 0) 72%);
+      filter: blur(46px);
+      opacity: 0.96;
+      pointer-events: none;
+    }
+
+    .hero-orbit {
+      position: absolute;
+      left: 50%;
+      bottom: -19rem;
+      width: min(102rem, 114vw);
+      height: min(42rem, 50vw);
+      transform: translateX(-50%);
+      border-radius: 9999px 9999px 0 0;
+      background:
+        radial-gradient(circle at 50% 16%, rgba(255, 255, 255, 0.99) 0%, rgba(255, 240, 243, 0.98) 14%, rgba(255, 214, 222, 0.96) 24%, rgba(255, 145, 168, 0.92) 34%, rgba(225, 29, 72, 0.9) 44%, rgba(176, 10, 49, 0.76) 54%, rgba(225, 29, 72, 0.16) 68%, rgba(255, 255, 255, 0) 78%);
+      filter: blur(16px);
+      opacity: 0.96;
+      pointer-events: none;
+    }
+
+    .hero-mask {
+      position: absolute;
+      left: 50%;
+      bottom: -29rem;
+      width: min(78rem, 84vw);
+      height: min(27rem, 32vw);
+      transform: translateX(-50%);
+      border-radius: 9999px 9999px 0 0;
+      background: #fff8f8;
+      box-shadow: 0 -18px 64px rgba(255, 248, 248, 0.96);
+      pointer-events: none;
+    }
+
+    .hero-inner-glow {
+      position: absolute;
+      left: 50%;
+      bottom: -10rem;
+      width: min(74rem, 92vw);
+      height: min(24rem, 32vw);
+      transform: translateX(-50%);
+      border-radius: 9999px 9999px 0 0;
+      background: radial-gradient(circle at 50% 82%, rgba(255, 255, 255, 1) 0%, rgba(255, 246, 248, 0.99) 20%, rgba(255, 226, 232, 0.97) 34%, rgba(255, 182, 197, 0.84) 50%, rgba(255, 111, 141, 0.42) 64%, rgba(225, 29, 72, 0) 80%);
+      filter: blur(34px);
+      pointer-events: none;
+    }
+
+    .hero-core-glow {
+      position: absolute;
+      left: 50%;
+      top: 5.5rem;
+      width: min(72rem, 94vw);
+      height: min(38rem, 52vw);
+      transform: translateX(-50%);
+      background: radial-gradient(circle at 50% 38%, rgba(255, 255, 255, 0.98) 0%, rgba(255, 246, 248, 0.96) 22%, rgba(255, 225, 231, 0.72) 42%, rgba(255, 176, 193, 0.22) 58%, rgba(255, 255, 255, 0) 76%);
+      filter: blur(34px);
+      opacity: 0.95;
+      pointer-events: none;
+    }
+
+    .hero-button {
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .hero-button::after {
+      content: "";
+      position: absolute;
+      top: -120%;
+      left: -35%;
+      width: 30%;
+      height: 340%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.72), transparent);
+      transform: rotate(18deg) translateX(-220%);
+      transition: transform 0.75s ease;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .hero-button:hover::after {
+      transform: rotate(18deg) translateX(460%);
+    }
+
+    .fa-text-reveal {
+      text-wrap: balance;
+    }
+
+    .fa-text-reveal-segment {
+      opacity: 0;
+      filter: blur(12px);
+      transform: translateY(18px);
+      animation: fa-text-reveal-in 0.72s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation-delay: calc(var(--fa-reveal-delay, 0ms) + (var(--fa-reveal-index, 0) * var(--fa-reveal-stagger, 70ms)));
+      will-change: opacity, transform, filter;
+    }
+
+    .reveal-on-scroll {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+      transition:
+        opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+        filter 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      transition-delay: var(--reveal-delay, 0ms);
+      will-change: opacity, transform, filter;
+    }
+
+    body.js-ready .reveal-on-scroll {
+      opacity: 0;
+      transform: translateY(28px);
+      filter: blur(14px);
+    }
+
+    body.js-ready .reveal-on-scroll.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+    }
+
+    .label-badge {
+      font-size: 0.875rem;
+      font-weight: 600;
+      letter-spacing: 0;
+      text-transform: none;
+      line-height: 1.4;
+    }
+
+    .label-badge-light {
+      color: #be123c;
+    }
+
+    .label-badge-dark {
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    @media (min-width: 1024px) {
+      main h1.font-display {
+        line-height: 1.02 !important;
+      }
+
+      main h2.font-display {
+        line-height: 1.14 !important;
+      }
+
+      main h3.font-display,
+      main h3 {
+        line-height: 1.22 !important;
+      }
+    }
+
+    @media (max-width: 640px) {
+      main h1.font-display {
+        font-size: 2.85rem !important;
+        line-height: 1.08 !important;
+      }
+
+      main h2.font-display {
+        font-size: 2.15rem !important;
+        line-height: 1.14 !important;
+      }
+
+      main h3.font-display,
+      main h3 {
+        font-size: 1.28rem !important;
+        line-height: 1.3 !important;
+      }
+
+      .headline-inline-logo img {
+        width: 42px;
+      }
+    }
+
+    .headline-inline-logo {
+      display: inline-flex;
+      vertical-align: middle;
+      align-items: center;
+      justify-content: center;
+      margin: 0 0.14em 0 0.08em;
+      transform: translateY(-0.04em);
+    }
+
+    .headline-inline-logo img {
+      width: clamp(40px, 5.6vw, 59px);
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 10px 18px rgba(225, 29, 72, 0.12));
+    }
+
+    .hero-inline-logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 0.5rem;
+      transform: translateY(-0.02em);
+    }
+
+    .hero-inline-logo img {
+      width: 1.05em;
+      height: auto;
+      display: block;
+    }
+
+    .problem-card {
+      position: relative;
+      overflow: hidden;
+      min-height: 27rem;
+      background:
+        radial-gradient(circle at top right, rgba(244, 63, 94, 0.11), transparent 24%),
+        linear-gradient(180deg, #ffffff 0%, #fff6f7 100%);
+      border-color: rgba(244, 63, 94, 0.14);
+      box-shadow: 0 24px 60px -32px rgba(75, 29, 44, 0.18);
+    }
+
+    .problem-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.66), transparent 24%, transparent 72%, rgba(244, 63, 94, 0.03));
+      pointer-events: none;
+    }
+
+    .problem-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .problem-card h3,
+    .problem-card p {
+      color: inherit;
+    }
+
+    .problem-visual {
+      position: absolute;
+      inset-inline: 0;
+      bottom: 0;
+      height: 48%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .problem-visual--one {
+      padding: 0.75rem 1rem 0.95rem;
+    }
+
+    .problem-timeline {
+      position: absolute;
+      inset: 0.35rem 0.85rem 0.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.52rem;
+      padding: 0.78rem 0.78rem;
+      border-radius: 1.1rem;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 244, 246, 0.96));
+      border: 1px solid rgba(244, 63, 94, 0.12);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92), 0 22px 42px -30px rgba(244, 63, 94, 0.26);
+    }
+
+    .problem-step {
+      position: relative;
+      display: flex;
+      align-items: center;
+      min-height: 2.24rem;
+      padding: 0.52rem 2.85rem 0.52rem 0.95rem;
+      border-radius: 0.95rem;
+      background: rgba(250, 244, 245, 0.95);
+      border: 1px solid rgba(244, 63, 94, 0.08);
+      color: rgba(75, 29, 44, 0.76);
+      font-size: 0.76rem;
+      line-height: 1.18;
+    }
+
+    .problem-step::before {
+      content: "";
+      position: absolute;
+      right: 0.95rem;
+      top: 50%;
+      width: 0.82rem;
+      height: 0.82rem;
+      transform: translateY(-50%);
+      border-radius: 9999px;
+      border: 2px solid rgba(244, 63, 94, 0.22);
+      border-top-color: #f43f5e;
+      background: transparent;
+      box-shadow: 0 0 0 5px rgba(244, 63, 94, 0.06);
+      animation: spin-loader 1s linear infinite;
+    }
+
+    .problem-step::after {
+      content: "";
+      position: absolute;
+      right: 1.34rem;
+      top: calc(100% - 0.18rem);
+      width: 1px;
+      height: 0.56rem;
+      background: rgba(244, 63, 94, 0.18);
+    }
+
+    .problem-step:last-child::after {
+      display: none;
+    }
+
+    .problem-step.is-active {
+      background: rgba(255, 240, 243, 0.96);
+      border-color: rgba(244, 63, 94, 0.14);
+      color: rgba(75, 29, 44, 0.84);
+    }
+
+    .problem-copy-badge {
+      position: absolute;
+      right: -0.2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      height: 2rem;
+      padding: 0 0.85rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #fb7185, #f43f5e);
+      color: white;
+      font-size: 0.72rem;
+      font-weight: 700;
+      box-shadow: 0 14px 24px -14px rgba(244, 63, 94, 0.6);
+      animation: loading-breathe 2.6s ease-in-out infinite;
+    }
+
+    .problem-copy-badge::before {
+      content: "";
+      width: 0.72rem;
+      height: 0.72rem;
+      border-radius: 9999px;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-top-color: #ffffff;
+      animation: spin-loader 1s linear infinite;
+    }
+
+    .problem-cursor {
+      position: absolute;
+      right: 1.2rem;
+      bottom: 0.85rem;
+      width: 2rem;
+      height: 2rem;
+      filter: drop-shadow(0 8px 12px rgba(36, 18, 26, 0.2));
+      transform: rotate(8deg);
+    }
+
+    .problem-cursor::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: #24121a;
+      clip-path: polygon(0 0, 82% 55%, 57% 60%, 72% 100%, 57% 100%, 44% 68%, 18% 84%);
+      border-radius: 0.1rem;
+    }
+
+    .problem-visual--two {
+      overflow: hidden;
+      border-radius: 0 0 1.8rem 1.8rem;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.98));
+    }
+
+    .problem-chart-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .problem-chart-glow {
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 100%;
+      background: radial-gradient(circle at 82% 38%, rgba(244, 63, 94, 0.14) 0%, rgba(244, 63, 94, 0.08) 8%, rgba(244, 63, 94, 0) 22%);
+      animation: chart-glow-drift 3.2s ease-in-out infinite;
+    }
+
+    .problem-chart-dot {
+      position: absolute;
+      right: 3.7rem;
+      bottom: 8.2rem;
+      width: 1.05rem;
+      height: 1.05rem;
+      border-radius: 9999px;
+      background: #ffffff;
+      box-shadow: 0 0 0 10px rgba(244, 63, 94, 0.16), 0 0 30px rgba(244, 63, 94, 0.62);
+      animation: pulse-glow 2.8s ease-in-out infinite;
+    }
+
+    .problem-price-tag {
+      position: absolute;
+      display: inline-flex;
+      align-items: center;
+      height: 2rem;
+      padding: 0 0.2rem;
+      border-radius: 0;
+      background: transparent;
+      border: 0;
+      color: rgba(75, 29, 44, 0.62);
+      font-size: 0.76rem;
+      font-weight: 600;
+      box-shadow: none;
+    }
+
+    .problem-price-tag--a {
+      left: 1.6rem;
+      bottom: 7.05rem;
+    }
+
+    .problem-price-tag--b {
+      left: 7.25rem;
+      bottom: 8.6rem;
+    }
+
+    .problem-price-tag--c {
+      left: 12.9rem;
+      bottom: 10.45rem;
+    }
+
+    .problem-visual--three {
+      background: radial-gradient(circle at 50% 74%, rgba(244, 63, 94, 0.07), rgba(244, 63, 94, 0.015) 42%, transparent 64%);
+    }
+
+    .problem-data-pill {
+      position: absolute;
+      left: 50%;
+      top: 0.95rem;
+      transform: translateX(-50%);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      height: 2.1rem;
+      padding: 0 0.92rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(255, 242, 245, 0.98), rgba(255, 232, 237, 0.94));
+      color: #be123c;
+      font-size: 0.8rem;
+      font-weight: 700;
+      box-shadow: 0 14px 30px -22px rgba(244, 63, 94, 0.24);
+    }
+
+    .problem-data-pill::before {
+      content: "";
+      width: 0.88rem;
+      height: 0.88rem;
+      border-radius: 9999px;
+      background: #ffffff;
+      box-shadow: inset 0 0 0 2px rgba(244, 63, 94, 0.5);
+    }
+
+    .problem-data-radar {
+      position: absolute;
+      left: 50%;
+      top: 5.15rem;
+      width: 12.25rem;
+      height: 12.25rem;
+      transform: translateX(-50%);
+      border-radius: 9999px;
+      background:
+        repeating-radial-gradient(circle at center,
+          rgba(244, 63, 94, 0.17) 0 2px,
+          transparent 2px 1.42rem),
+        radial-gradient(circle at center, rgba(255,255,255,0.35) 0, rgba(255,255,255,0) 62%);
+      opacity: 0.92;
+    }
+
+    .problem-data-radar::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 9999px;
+      background:
+        conic-gradient(from -52deg,
+          rgba(255,255,255,0.78) 0deg,
+          rgba(255,255,255,0.58) 20deg,
+          rgba(255,255,255,0.22) 42deg,
+          rgba(255,255,255,0) 68deg,
+          rgba(255,255,255,0) 360deg);
+      clip-path: polygon(50% 50%, 0% 16%, 0% 0%, 100% 0%, 66% 34%);
+      opacity: 0.95;
+    }
+
+    .problem-data-radar::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 1.18rem;
+      height: 1.18rem;
+      transform: translate(-50%, -50%);
+      border-radius: 9999px;
+      background: #f43f5e;
+      box-shadow: 0 0 0 0.32rem rgba(255,255,255,0.82);
+    }
+
+    .problem-data-dot {
+      position: absolute;
+      width: 0.38rem;
+      height: 0.38rem;
+      border-radius: 9999px;
+      background: rgba(255,255,255,0.92);
+      box-shadow: 0 0 10px rgba(255,255,255,0.82);
+    }
+
+    .problem-data-dot::after {
+      content: "";
+      position: absolute;
+      inset: -0.22rem;
+      border-radius: 9999px;
+      background: radial-gradient(circle, rgba(255,255,255,0.34), rgba(255,255,255,0));
+    }
+
+    .problem-data-dot--one {
+      left: calc(50% - 3.85rem);
+      top: 8.05rem;
+    }
+
+    .problem-data-dot--two {
+      left: calc(50% + 0.9rem);
+      top: 8.95rem;
+    }
+
+    .problem-data-dot--three {
+      left: calc(50% + 3.6rem);
+      top: 6.15rem;
+    }
+
+    .problem-data-sweep {
+      display: none;
+    }
+
+    @keyframes spin-loader {
+      to {
+        transform: translateY(-50%) rotate(360deg);
+      }
+    }
+
+    @keyframes radar-sweep {
+      from {
+        transform: translateX(-50%) rotate(0deg);
+      }
+      to {
+        transform: translateX(-50%) rotate(360deg);
+      }
+    }
+
+    @keyframes loading-breathe {
+      0%, 100% {
+        transform: translateY(-50%) scale(1);
+        box-shadow: 0 14px 24px -14px rgba(244, 63, 94, 0.6);
+      }
+      50% {
+        transform: translateY(-50%) scale(1.03);
+        box-shadow: 0 16px 28px -14px rgba(244, 63, 94, 0.72);
+      }
+    }
+
+    @keyframes chart-glow-drift {
+      0%, 100% {
+        opacity: 0.78;
+        transform: translateY(0);
+      }
+      50% {
+        opacity: 1;
+        transform: translateY(-4px);
+      }
+    }
+
+    .trust-counter {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+      will-change: opacity, transform;
+      visibility: hidden;
+    }
+
+    .trust-counter.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+      visibility: visible;
+    }
+
+    .faq-item[data-open="true"] .faq-icon-plus {
+      transform: rotate(45deg);
+    }
+
+    .faq-item[data-open="true"] .faq-answer {
+      grid-template-rows: 1fr;
+      opacity: 1;
+    }
+
+    .faq-answer {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      transition: grid-template-rows 0.25s ease, opacity 0.25s ease;
+    }
+
+    .faq-answer > div {
+      overflow: hidden;
+    }
+
+    @keyframes fa-text-reveal-in {
+      from {
+        opacity: 0;
+        filter: blur(12px);
+        transform: translateY(18px);
+      }
+
+      to {
+        opacity: 1;
+        filter: blur(0);
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .problem-card {
+        min-height: 24rem;
+      }
+
+      .problem-visual {
+        height: 44%;
+      }
+    }
+  </style>
+</head>
+<body class="font-sans text-ink-900">
+  <header class="sticky top-0 z-50 border-b border-white/50 bg-white/80 backdrop-blur-xl">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+      <a href="#top" class="flex items-center gap-3">
+        <img src="assets/logo/fireant-logo-horizontal.png" alt="FireAnt" class="h-9 w-auto">
+      </a>
+
+      <button
+        id="menu-toggle"
+        class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-brand-100 bg-white text-ink-900 lg:hidden"
+        aria-label="Mở menu"
+        aria-expanded="false"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" />
+        </svg>
+      </button>
+
+      <nav id="main-nav" class="hidden items-center gap-8 lg:flex">
+        <a href="#van-de" class="text-sm font-medium text-ink-700 transition hover:text-brand-600">Vấn đề</a>
+        <a href="#tinh-nang" class="text-sm font-medium text-ink-700 transition hover:text-brand-600">Tính năng</a>
+        <a href="#huong-dan" class="text-sm font-medium text-ink-700 transition hover:text-brand-600">Hướng dẫn</a>
+        <a href="#faq" class="text-sm font-medium text-ink-700 transition hover:text-brand-600">FAQ</a>
+        <a
+          href="#tai-ngay"
+          class="inline-flex items-center justify-center rounded-full bg-brand-gradient px-5 py-3 text-sm font-semibold text-white shadow-glow transition hover:-translate-y-0.5"
+        >
+          Tải ngay
+        </a>
+      </nav>
+    </div>
+
+    <div id="mobile-nav" class="hidden border-t border-slate-200/70 bg-white/95 lg:hidden">
+      <div class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-4 sm:px-6">
+        <a href="#van-de" class="rounded-2xl px-4 py-3 text-sm font-medium text-ink-700 hover:bg-brand-50">Vấn đề</a>
+        <a href="#tinh-nang" class="rounded-2xl px-4 py-3 text-sm font-medium text-ink-700 hover:bg-brand-50">Tính năng</a>
+        <a href="#huong-dan" class="rounded-2xl px-4 py-3 text-sm font-medium text-ink-700 hover:bg-brand-50">Hướng dẫn</a>
+        <a href="#faq" class="rounded-2xl px-4 py-3 text-sm font-medium text-ink-700 hover:bg-brand-50">FAQ</a>
+        <a
+          href="#tai-ngay"
+          class="mt-2 inline-flex items-center justify-center rounded-full bg-brand-gradient px-5 py-3 text-sm font-semibold text-white shadow-glow"
+        >
+          Tải ngay
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="relative overflow-hidden px-4 pb-0 pt-10 sm:px-6 lg:px-8 lg:pt-16">
+      <div class="absolute inset-0 bg-[linear-gradient(to_bottom,#ffffff,#fff1f2_36%,#ffc5ce_88%)]"></div>
+      <div class="absolute left-1/2 top-20 h-72 w-72 -translate-x-1/2 rounded-full bg-brand-300/15 blur-3xl"></div>
+      <div class="hero-grid-columns">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <div class="hero-core-glow"></div>
+      <div class="hero-orbit-glow"></div>
+      <div class="hero-orbit"></div>
+      <div class="hero-mask"></div>
+      <div class="hero-inner-glow"></div>
+
+      <div class="hero-row-lines">
+        <div class="relative z-10 flex justify-center pt-8">
+          <div class="inline-flex items-center border border-b-0 border-brand-200/70 bg-white/70 px-5 py-2 text-sm font-medium text-ink-700">
+            Phiên bản 5.0.0
+          </div>
+        </div>
+
+        <div class="relative z-10">
+          <div class="mx-auto flex min-h-[21rem] max-w-[84vw] flex-col items-center justify-center px-2 py-12 text-center sm:px-10 lg:min-h-[24rem] lg:px-20">
+            <h1 class="hero-text-reveal max-w-5xl font-display text-5xl font-bold leading-[1.04] tracking-[-0.055em] text-ink-900 sm:text-6xl sm:leading-[0.98] lg:text-[6rem] lg:leading-[0.92]">
+              FireAnt for Metakit/AmiBroker
+            </h1>
+            <p class="hero-text-reveal mt-6 max-w-3xl text-lg leading-8 text-ink-700 sm:text-xl">
+              Phần mềm cập nhật dữ liệu tốt nhất cho AmiBroker và MetaStock
+            </p>
+          </div>
+        </div>
+
+        <div class="relative z-10 flex justify-center px-8 pb-12 pt-0 sm:px-24">
+          <div class="flex w-full max-w-[80vw] flex-col items-center justify-center gap-4 md:max-w-[560px] md:flex-row">
+            <a
+              href="#huong-dan"
+              class="hero-button flex h-14 w-full items-center justify-center rounded-sm border border-brand-200/80 bg-white/55 px-6 text-base font-semibold text-ink-900 shadow-[0_16px_34px_-20px_rgba(225,29,72,0.28)] backdrop-blur-sm transition hover:-translate-y-0.5 hover:bg-white/72 md:max-w-[220px]"
+            >
+              <span class="relative z-10">Hướng dẫn sử dụng</span>
+            </a>
+            <a
+              href="#tai-ngay"
+              class="hero-button flex h-14 w-full items-center justify-center rounded-sm bg-brand-gradient px-6 text-base font-semibold text-white shadow-[0_24px_50px_-18px_rgba(225,29,72,0.48)] transition hover:-translate-y-0.5"
+            >
+              <span class="relative z-10">Tải ngay FireAnt Metakit</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="relative bg-white px-4 pb-8 pt-10 sm:px-6 lg:px-8">
+      <div class="mx-auto grid max-w-7xl gap-8 border-y border-brand-100/80 py-10 text-center md:grid-cols-2 xl:grid-cols-4">
+        <div>
+          <p class="label-badge text-ink-700">Lượt tải</p>
+          <p class="mt-3 font-display text-4xl font-bold tracking-[-0.04em] text-ink-900 lg:text-5xl">
+            <span class="trust-counter" data-target="125000" data-suffix="+"></span>
+          </p>
+        </div>
+        <div>
+          <p class="label-badge text-ink-700">Người dùng AmiBroker</p>
+          <p class="mt-3 font-display text-4xl font-bold tracking-[-0.04em] text-ink-900 lg:text-5xl">
+            <span class="trust-counter" data-target="28000" data-suffix="+"></span>
+          </p>
+        </div>
+        <div>
+          <p class="label-badge text-ink-700">Người dùng MetaStock</p>
+          <p class="mt-3 font-display text-4xl font-bold tracking-[-0.04em] text-ink-900 lg:text-5xl">
+            <span class="trust-counter" data-target="5500" data-suffix="+"></span>
+          </p>
+        </div>
+        <div>
+          <p class="label-badge text-ink-700">Người dùng MetaTrader</p>
+          <p class="mt-3 font-display text-4xl font-bold tracking-[-0.04em] text-ink-900 lg:text-5xl">
+            <span class="trust-counter" data-target="2500" data-suffix="+"></span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="van-de" class="px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+      <div class="mx-auto max-w-7xl">
+        <div class="max-w-3xl">
+          <span class="inline-flex items-center gap-2 rounded-full bg-brand-50 px-4 py-2 text-sm font-semibold text-brand-700">
+            01 / Vấn đề
+          </span>
+          <h2 class="mt-5 font-display text-4xl font-bold tracking-[-0.04em] text-ink-900 sm:text-5xl">
+            AmiBroker mạnh<span class="headline-inline-logo"><img src="assets/logo/Amibroker-Logo.webp" alt="AmiBroker"></span>nhưng phần <span class="whitespace-nowrap">dữ liệu</span> vẫn dễ làm bạn chậm lại
+          </h2>
+          <p class="mt-5 max-w-2xl text-lg leading-8 text-ink-700">
+            Nhiều người dùng không thiếu công cụ phân tích. Thứ còn thiếu là một cách làm nhanh, gọn và đủ dữ liệu để đi thẳng vào việc.
+          </p>
+        </div>
+
+        <div class="mt-12 grid gap-5 lg:grid-cols-3">
+          <article class="problem-card rounded-[1.8rem] border p-6 shadow-soft lg:p-7">
+            <h3 class="mt-2 text-xl font-semibold text-ink-900">Mất thời gian chuẩn bị dữ liệu</h3>
+            <p class="mt-3 text-base leading-7 text-ink-700">
+              Cập nhật thủ công hoặc xử lý nhiều bước nhỏ khiến nhịp phân tích bị đứt đoạn ngay từ đầu.
+            </p>
+            <div class="problem-visual problem-visual--one">
+              <div class="problem-timeline">
+                <div class="problem-step">Kết nối dữ liệu đầu vào</div>
+                <div class="problem-step">Chuẩn hóa lịch sử giá</div>
+                <div class="problem-step">Đồng bộ bộ lọc phân tích</div>
+                <div class="problem-step is-active">
+                  Đẩy dữ liệu vào workspace
+                  <span class="problem-copy-badge">Loading</span>
+                </div>
+              </div>
+              <div class="problem-cursor"></div>
+            </div>
+          </article>
+
+          <article class="problem-card rounded-[1.8rem] border p-6 shadow-soft lg:p-7">
+            <h3 class="mt-2 text-xl font-semibold text-ink-900">Muốn theo dõi realtime rõ hơn</h3>
+            <p class="mt-3 text-base leading-7 text-ink-700">
+              Khi dữ liệu trong phiên chưa đủ liền mạch, việc theo dõi tín hiệu và phản ứng theo thị trường cũng chậm hơn.
+            </p>
+            <div class="problem-visual problem-visual--two">
+              <svg class="problem-chart-svg" viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M0 180C32 166 58 154 92 145C126 136 160 123 191 105C222 87 248 70 278 58C295 51 307 47 320 44" stroke="rgba(244,63,94,0.16)" stroke-width="2"/>
+                <path d="M0 180C32 166 58 154 92 145C126 136 160 123 191 105C222 87 248 70 278 58C295 51 307 47 320 44V180H0Z" fill="url(#problemArea)"/>
+                <path d="M0 170C27 160 56 149 90 138C124 127 158 115 190 97C220 80 248 62 279 50C294 44 307 39 320 36" stroke="url(#problemLine)" stroke-width="3.5" stroke-linecap="round"/>
+                <defs>
+                  <linearGradient id="problemLine" x1="18" y1="155" x2="308" y2="40" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#fb7185"/>
+                    <stop offset="1" stop-color="#f43f5e"/>
+                  </linearGradient>
+                  <linearGradient id="problemArea" x1="160" y1="36" x2="160" y2="180" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="rgba(244,63,94,0.22)"/>
+                    <stop offset="1" stop-color="rgba(244,63,94,0.02)"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="problem-price-tag problem-price-tag--a">$289.15</div>
+              <div class="problem-price-tag problem-price-tag--b">$442.95</div>
+              <div class="problem-price-tag problem-price-tag--c">$1,459.50</div>
+              <div class="problem-chart-dot"></div>
+            </div>
+          </article>
+
+          <article class="problem-card rounded-[1.8rem] border p-6 shadow-soft lg:p-7">
+            <h3 class="mt-2 text-xl font-semibold text-ink-900">Thiếu chiều sâu dữ liệu</h3>
+            <p class="mt-3 text-base leading-7 text-ink-700">
+              Chỉ có giá và khối lượng là chưa đủ nếu bạn muốn mở rộng hệ thống phân tích và nhìn thị trường sâu hơn.
+            </p>
+            <div class="problem-visual problem-visual--three">
+              <div class="problem-data-pill">Data</div>
+              <div class="problem-data-radar"></div>
+              <div class="problem-data-dot problem-data-dot--one"></div>
+              <div class="problem-data-dot problem-data-dot--two"></div>
+              <div class="problem-data-dot problem-data-dot--three"></div>
+              <div class="problem-data-sweep"></div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="tinh-nang" class="border-y border-brand-100/80 bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
+      <div class="mx-auto max-w-7xl">
+        <div class="mx-auto max-w-4xl text-center">
+          <span class="inline-flex items-center gap-2 rounded-full bg-brand-50 px-4 py-2 text-sm font-semibold text-brand-700">
+            02 / Tính năng
+          </span>
+          <h2 class="mt-5 font-display text-4xl font-bold tracking-[-0.04em] text-ink-900 sm:text-5xl">
+            Tính năng chính của FireAnt Metakit
+          </h2>
+          <p class="mx-auto mt-5 max-w-2xl text-base leading-7 text-ink-700 sm:text-lg sm:leading-8">
+            3 cụm tính năng cốt lõi giúp người dùng AmiBroker cài nhanh hơn, có dữ liệu sâu hơn và mở rộng phân tích dễ hơn.
+          </p>
+          <div class="mx-auto mt-8 h-px w-full max-w-3xl bg-ink-900/12"></div>
+        </div>
+
+        <div class="mt-14 space-y-20 lg:space-y-24">
+          <article class="mx-auto max-w-6xl">
+            <div class="relative overflow-hidden rounded-[2rem] bg-[#d7d7d7]">
+              <img src="assets/img/sc2.png" alt="Giao diện cài đặt và thiết lập FireAnt Metakit cho AmiBroker" class="block w-full h-auto align-top" />
+              <div class="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-[radial-gradient(ellipse_at_bottom_left,rgba(255,255,255,1),transparent_58%),radial-gradient(ellipse_at_bottom_right,rgba(255,255,255,1),transparent_58%),linear-gradient(to_top,rgba(255,255,255,1),rgba(255,255,255,0.72)_38%,rgba(255,255,255,0))]"></div>
+            </div>
+            <div class="mt-10 grid gap-5 md:grid-cols-3 md:gap-6 lg:mt-12">
+              <div class="flex items-start gap-3">
+                <span class="mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-full border border-brand-200 text-brand-500">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2M12 22a10 10 0 100-20 10 10 0 000 20z" />
+                  </svg>
+                </span>
+                <div>
+                  <h3 class="text-[17px] font-semibold leading-7 text-ink-900">Dễ cài đặt, dễ sử dụng</h3>
+                  <p class="mt-1 text-sm leading-6 text-ink-700">Cài đặt, thiết lập và sử dụng chỉ cần 1 lần là đủ, dữ liệu sẽ được cập nhật mãi mãi.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-full border border-brand-200 text-brand-500">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 18V6m4 9V9m5 11V4m5 14v-8" />
+                  </svg>
+                </span>
+                <div>
+                  <h3 class="text-[17px] font-semibold leading-7 text-ink-900">Vận hành đơn giản, ổn định</h3>
+                  <p class="mt-1 text-sm leading-6 text-ink-700">MetaKit chạy nhẹ, cập nhật dữ liệu đều và ổn định trong quá trình bạn sử dụng AmiBroker.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-full border border-brand-200 text-brand-500">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 3L4 14h7l-1 7 9-11h-7l1-7z" />
+                  </svg>
+                </span>
+                <div>
+                  <h3 class="text-[17px] font-semibold leading-7 text-ink-900">Cập nhật siêu nhanh</h3>
+                  <p class="mt-1 text-sm leading-6 text-ink-700">Dữ liệu được cập nhật liên tục và mới nhất, giúp bạn theo dõi thị trường nhanh hơn.</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="mx-auto max-w-6xl">
+            <div class="relative overflow-hidden rounded-[2rem] bg-[#d7d7d7]">
+              <img src="assets/img/sc5.png" alt="Giao diện dữ liệu realtime và dữ liệu mở rộng trong AmiBroker" class="block w-full h-auto align-top" />
+              <div class="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-[radial-gradient(ellipse_at_bottom_left,rgba(255,255,255,1),transparent_58%),radial-gradient(ellipse_at_bottom_right,rgba(255,255,255,1),transparent_58%),linear-gradient(to_top,rgba(255,255,255,1),rgba(255,255,255,0.72)_38%,rgba(255,255,255,0))]"></div>
+            </div>
+            <div class="mt-10 grid gap-5 md:grid-cols-3 md:gap-6 lg:mt-12">
+              <div class="flex items-start gap-3">
+                <span class="mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-full border border-brand-200 text-brand-500">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 19V5m0 14h16M7 14l3-3 3 2 5-6" />
+                  </svg>
+                </span>
+                <div>
+                  <h3 class="text-[17px] font-semibold leading-7 text-ink-900">Dữ liệu đa dạng, phong phú</h3>
+                  <p class="mt-1 text-sm leading-6 text-ink-700">Dữ liệu mua bán chủ động, cung cầu, nước ngoài, index, sector, ngành và nhiều lớp dữ liệu khác.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-full border border-brand-200 text-brand-500">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v8m4-4H8" />
+                  </svg>
+                </span>
+                <div>
+                  <h3 class="text-[17px] font-semibold leading-7 text-ink-900">Dữ liệu TICK không giới hạn cho AmiBroker</h3>
+                  <p class="mt-1 text-sm leading-6 text-ink-700">Dữ liệu giá realtime được cập nhật theo từng tick và đặc biệt không bị giới hạn dữ liệu.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-full border border-brand-200 text-brand-500">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h8M8 12h8M8 17h5" />
+                  </svg>
+                </span>
+                <div>
+                  <h3 class="text-[17px] font-semibold leading-7 text-ink-900">Tích hợp đầy đủ dữ liệu vào AmiBroker</h3>
+                  <p class="mt-1 text-sm leading-6 text-ink-700">Xem dữ liệu tài chính, thông tin doanh nghiệp và realtime quote của cổ phiếu ngay trong AmiBroker.</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="mx-auto max-w-6xl">
+            <div class="relative overflow-hidden rounded-[2rem] bg-[#d7d7d7]">
+              <img src="assets/img/sc3.png" alt="Giao diện bộ script và công cụ mở rộng cho AmiBroker" class="block w-full h-auto align-top" />
+              <div class="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-[radial-gradient(ellipse_at_bottom_left,rgba(255,255,255,1),transparent_58%),radial-gradient(ellipse_at_bottom_right,rgba(255,255,255,1),transparent_58%),linear-gradient(to_top,rgba(255,255,255,1),rgba(255,255,255,0.72)_38%,rgba(255,255,255,0))]"></div>
+            </div>
+            <div class="mt-10 grid gap-5 md:grid-cols-3 md:gap-6 lg:mt-12">
+              <div class="flex items-start gap-3">
+                <span class="mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-full border border-brand-200 text-brand-500">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h10M4 18h7" />
+                  </svg>
+                </span>
+                <div>
+                  <h3 class="text-[17px] font-semibold leading-7 text-ink-900">Công cụ tính chỉ số</h3>
+                  <p class="mt-1 text-sm leading-6 text-ink-700">Bộ công cụ giúp bạn xây dựng và tính chỉ số tự tạo như VN-INDEX theo nhu cầu riêng.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-full border border-brand-200 text-brand-500">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3v2.25m4.5-2.25v2.25M4.5 9h15M6 21h12a1.5 1.5 0 001.5-1.5V7.5A1.5 1.5 0 0018 6H6a1.5 1.5 0 00-1.5 1.5v12A1.5 1.5 0 006 21z" />
+                  </svg>
+                </span>
+                <div>
+                  <h3 class="text-[17px] font-semibold leading-7 text-ink-900">Bộ script hữu ích cho AmiBroker</h3>
+                  <p class="mt-1 text-sm leading-6 text-ink-700">Bạn có thể tải về bộ hàng chục script hữu ích hỗ trợ phân tích kỹ thuật trong AmiBroker.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-full border border-brand-200 text-brand-500">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 7.5h9v9h-9zM4.5 12h3m9 0h3M12 4.5v3m0 9v3" />
+                  </svg>
+                </span>
+                <div>
+                  <h3 class="text-[17px] font-semibold leading-7 text-ink-900">Metakit Data Plugin cho AmiBroker</h3>
+                  <p class="mt-1 text-sm leading-6 text-ink-700">Plugin giúp tích hợp dữ liệu từ FireAnt vào AmiBroker nhanh và thuận tiện chỉ sau vài bước.</p>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="huong-dan" class="px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
+      <div class="mx-auto max-w-7xl">
+        <div class="relative overflow-hidden rounded-[2.2rem] border border-brand-300/35 bg-[linear-gradient(135deg,#8f1117_0%,#c61f2a_42%,#eb4b58_100%)] p-7 shadow-[0_42px_100px_-52px_rgba(127,29,29,0.52)] sm:p-8 lg:p-10">
+          <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_42%_at_52%_84%,rgba(255,255,255,0.34),rgba(255,255,255,0.16)_26%,rgba(255,255,255,0)_74%)]"></div>
+          <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.08),transparent_42%,rgba(127,29,29,0.12)_100%)]"></div>
+          <div class="grid items-center gap-8 lg:grid-cols-[0.94fr_1.06fr] lg:gap-10">
+            <div class="relative z-10 max-w-xl">
+              <span class="inline-flex items-center gap-2 rounded-full border border-white/18 bg-white/10 px-4 py-2 text-sm font-semibold text-white shadow-[0_12px_30px_-20px_rgba(127,29,29,0.4)] backdrop-blur-sm">
+                03 / Hướng dẫn
+              </span>
+              <h2 class="mt-5 font-display text-4xl font-bold leading-[1.18] tracking-[-0.04em] text-white sm:text-5xl">
+                Hướng dẫn sử dụng FireAnt Metakit/AmiBroker
+              </h2>
+              <p class="mt-4 max-w-lg text-base leading-7 text-white sm:text-lg sm:leading-8">
+                Có sẵn khóa học nền tảng để bạn cài đặt đúng, hiểu cách dùng và vào việc nhanh hơn mà không phải tự mò từ đầu.
+              </p>
+
+              <div class="mt-7 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-4">
+                <a
+                  href="https://edu.fireant.vn/course/amibroker-basic?utm_source=metakit_amibroker_landing&utm_medium=cta&utm_campaign=amibroker_basic_course&utm_content=section_03_huong_dan"
+                  target="_blank"
+                  rel="noreferrer"
+                  class="inline-flex min-h-[3.75rem] w-full items-center justify-center rounded-full bg-white px-6 py-4 text-center text-base font-semibold text-brand-700 shadow-[0_22px_44px_-20px_rgba(127,29,29,0.45)] transition hover:-translate-y-0.5 hover:bg-white/95 sm:min-h-0 sm:w-auto sm:px-6 sm:py-3.5"
+                >
+                  Xem khóa học AmiBroker Basic
+                </a>
+              </div>
+            </div>
+
+            <div class="relative z-10 self-end overflow-visible -mr-8 -mb-8 mt-1 lg:-mr-18 lg:-mb-16">
+              <div class="ml-auto w-[112%] max-w-none origin-center -rotate-[5deg] overflow-hidden rounded-[2.2rem] border border-white/95 bg-white p-0 sm:w-[110%] lg:w-[98%]">
+                <div class="overflow-hidden rounded-[2.2rem] border border-brand-100/70 bg-white">
+                  <img
+                    src="assets/img/f4.png"
+                    alt="Hình minh họa khóa học và hướng dẫn sử dụng AmiBroker"
+                    class="block h-auto w-[130%] max-w-none align-top sm:w-[128%] lg:w-[124%]"
+                    style="margin-left:0;"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-white px-4 pb-20 pt-24 sm:px-6 lg:px-8 lg:py-24">
+      <div class="mx-auto max-w-7xl">
+        <div class="max-w-6xl">
+          <span class="inline-flex items-center gap-2 rounded-full bg-brand-50/80 px-4 py-2 text-sm font-semibold text-brand-700 shadow-[0_14px_34px_-24px_rgba(239,68,68,0.35)]">
+            04 / Social proof
+          </span>
+          <h2 class="mt-5 max-w-6xl font-display text-4xl font-bold tracking-[-0.04em] text-ink-900 sm:text-5xl">
+            Phản hồi thực tế từ người dùng FireAnt MetaKit
+          </h2>
+          <p class="mt-5 max-w-3xl text-lg leading-8 text-ink-700">
+            Những chia sẻ ngắn, thật và dễ tin giúp người xem cảm nhận rõ hơn giá trị sản phẩm trong quá trình sử dụng thực tế.
+          </p>
+        </div>
+
+        <div class="mt-14 grid gap-6 lg:grid-cols-3 lg:gap-7">
+          <article class="flex min-h-[20rem] flex-col rounded-[2rem] border border-slate-200 bg-white px-8 py-7 shadow-[0_22px_44px_-36px_rgba(15,23,42,0.16)]">
+            <p class="text-[15px] leading-7 text-ink-700">
+              “FireAnt MetaKit tích hợp dữ liệu quá hoàn hảo cho AmiBroker, hiếm có một phần mềm nào có thể làm được. Bạn có thể xem các chỉ tiêu tài chính của 1 mã ngay trong AmiBroker, wow...”
+            </p>
+
+            <div class="mt-auto pt-4">
+              <div class="h-px w-full bg-slate-200"></div>
+            </div>
+
+            <div class="flex items-center gap-4 pt-4">
+              <img
+                src="assets/img/nguyen-tuan-manh.jpg"
+                alt="Nguyễn Tuấn Mạnh"
+                class="h-16 w-16 rounded-full object-cover ring-4 ring-slate-100"
+              />
+              <div>
+                <p class="text-[17px] font-semibold leading-7 text-ink-900">Nguyễn Tuấn Mạnh</p>
+                <p class="mt-1.5 text-base text-slate-500">Chuyên viên môi giới CTCK</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="flex min-h-[20rem] flex-col rounded-[2rem] border border-brand-500/30 bg-[linear-gradient(180deg,#df1748_0%,#cf143f_100%)] px-8 py-7 shadow-[0_32px_80px_-42px_rgba(223,23,72,0.5)]">
+            <p class="text-[15px] font-semibold leading-7 text-white">
+              “Tôi tuổi cao, kĩ năng sử dụng phần mềm không được như các bạn trẻ, nhưng bây giờ phần mềm đã tự động cập nhật hoàn toàn rồi, tôi rất yên tâm không lo về sử dụng phần mềm nữa”
+            </p>
+
+            <div class="mt-auto pt-4">
+              <div class="h-px w-full bg-white/45"></div>
+            </div>
+
+            <div class="flex items-center gap-4 pt-4">
+              <img
+                src="assets/img/phan-ngoc-an.jpg"
+                alt="Mr. Phan Ngọc An"
+                class="h-16 w-16 rounded-full object-cover ring-4 ring-white/70"
+              />
+              <div>
+                <p class="text-[17px] font-semibold leading-7 text-white">Mr. Phan Ngọc An</p>
+                <p class="mt-1.5 text-base text-white">Nhà đầu tư không chuyên</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="flex min-h-[20rem] flex-col rounded-[2rem] border border-slate-200 bg-white px-8 py-7 shadow-[0_22px_44px_-36px_rgba(15,23,42,0.16)]">
+            <p class="text-[15px] leading-7 text-slate-500">
+              “Tôi là hội viên lâu năm của FireAnt. Tôi vẫn sử dụng phần mềm MetaKit để cập nhật dữ liệu cho MetaStock. Gần đây tôi được giới thiệu về MetaKit thế hệ mới và bây giờ tôi chuyển hẳn sang sử dụng AmiBroker vì FireAnt MetaKit hỗ trợ quá tốt cho AmiBroker”
+            </p>
+
+            <div class="mt-auto pt-4">
+              <div class="h-px w-full bg-slate-200"></div>
+            </div>
+
+            <div class="flex items-center gap-4 pt-4">
+              <img
+                src="assets/img/cao-hong-anh.jpg"
+                alt="Mrs. Cao Hồng Ánh"
+                class="h-16 w-16 rounded-full object-cover ring-4 ring-slate-100"
+              />
+              <div>
+                <p class="text-[17px] font-semibold leading-7 text-ink-900">Mrs. Cao Hồng Ánh</p>
+                <p class="mt-1.5 text-base text-slate-500">Nhà đầu tư lâu năm</p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="px-4 pb-20 pt-24 sm:px-6 lg:px-8 lg:py-24">
+      <div class="mx-auto max-w-5xl">
+        <div class="text-center">
+          <span class="inline-flex items-center gap-2 rounded-full bg-brand-50 px-4 py-2 text-sm font-semibold text-brand-700">
+            05 / FAQ
+          </span>
+          <h2 class="mt-5 font-display text-4xl font-bold tracking-[-0.04em] text-ink-900 sm:text-5xl">
+            Những câu hỏi <span class="whitespace-nowrap">thường gặp</span>
+          </h2>
+          <p class="mx-auto mt-5 max-w-2xl text-lg leading-8 text-ink-700">
+            Trả lời ngắn, rõ và đúng điều người dùng cần biết trước khi bắt đầu.
+          </p>
+        </div>
+
+        <div class="mt-10 space-y-3">
+          <article class="faq-item rounded-[1.5rem] border border-white/70 bg-white p-5 shadow-soft sm:rounded-[1.7rem] sm:p-6" data-open="true">
+            <button class="faq-trigger flex w-full items-center justify-between gap-6 text-left" type="button">
+              <span class="text-base font-semibold text-ink-900 sm:text-lg">Dùng được với phiên bản AmiBroker nào?</span>
+              <span class="faq-icon-plus text-[1.65rem] font-light leading-none text-brand-600 transition-transform sm:text-3xl">+</span>
+            </button>
+            <div class="faq-answer mt-4">
+              <div>
+                <p class="text-sm leading-6 text-ink-700 sm:text-base sm:leading-7">
+                  FireAnt Metakit tương thích hoàn toàn với cả hai phiên bản AmiBroker 32-bit và 64-bit.
+                </p>
+              </div>
+            </div>
+          </article>
+
+          <article class="faq-item rounded-[1.5rem] border border-white/70 bg-white p-5 shadow-soft sm:rounded-[1.7rem] sm:p-6" data-open="false">
+            <button class="faq-trigger flex w-full items-center justify-between gap-6 text-left" type="button">
+              <span class="text-base font-semibold text-ink-900 sm:text-lg">Có hỗ trợ dữ liệu realtime không?</span>
+              <span class="faq-icon-plus text-[1.65rem] font-light leading-none text-brand-600 transition-transform sm:text-3xl">+</span>
+            </button>
+            <div class="faq-answer mt-4">
+              <div>
+                <p class="text-sm leading-6 text-ink-700 sm:text-base sm:leading-7">
+                  Có. FireAnt Metakit cung cấp dữ liệu thời gian thực (realtime) cập nhật liên tục với khung dữ liệu chi tiết nhất tới cấp độ Tick (1 Tick = 1 giao dịch).
+                </p>
+              </div>
+            </div>
+          </article>
+
+          <article class="faq-item rounded-[1.5rem] border border-white/70 bg-white p-5 shadow-soft sm:rounded-[1.7rem] sm:p-6" data-open="false">
+            <button class="faq-trigger flex w-full items-center justify-between gap-6 text-left" type="button">
+              <span class="text-base font-semibold text-ink-900 sm:text-lg">Ngoài dữ liệu giá cơ bản còn có gì thêm?</span>
+              <span class="faq-icon-plus text-[1.65rem] font-light leading-none text-brand-600 transition-transform sm:text-3xl">+</span>
+            </button>
+            <div class="faq-answer mt-4">
+              <div>
+                <p class="text-sm leading-6 text-ink-700 sm:text-base sm:leading-7">
+                  Bên cạnh dữ liệu giá và khối lượng tiêu chuẩn, FireAnt Metakit bổ sung hệ sinh thái dữ liệu chuyên sâu và công cụ bổ trợ:
+                </p>
+                <p class="mt-3 text-sm leading-6 text-ink-700 sm:text-base sm:leading-7">
+                  Dữ liệu nâng cao: Phân ngành ICB, Cung - Cầu, Khối ngoại, Tự doanh, Mua/Bán chủ động, Thống kê thị trường và Chỉ số thế giới.
+                </p>
+                <p class="mt-3 text-sm leading-6 text-ink-700 sm:text-base sm:leading-7">
+                  Tiện ích mở rộng: Công cụ Tính chỉ số tự tạo và tính năng Quant AI giúp tự động sinh mã code AFL để tạo chỉ báo, lọc cổ phiếu và xây dựng chiến lược giao dịch cá nhân.
+                </p>
+              </div>
+            </div>
+          </article>
+
+          <article class="faq-item rounded-[1.5rem] border border-white/70 bg-white p-5 shadow-soft sm:rounded-[1.7rem] sm:p-6" data-open="false">
+            <button class="faq-trigger flex w-full items-center justify-between gap-6 text-left" type="button">
+              <span class="text-base font-semibold text-ink-900 sm:text-lg">Có tài liệu và video hướng dẫn không?</span>
+              <span class="faq-icon-plus text-[1.65rem] font-light leading-none text-brand-600 transition-transform sm:text-3xl">+</span>
+            </button>
+            <div class="faq-answer mt-4">
+              <div>
+                <p class="text-sm leading-6 text-ink-700 sm:text-base sm:leading-7">
+                  Có. Bạn có thể dễ dàng bắt đầu với các tài liệu và video hướng dẫn chi tiết tại:
+                </p>
+                <p class="mt-3 text-sm leading-6 text-ink-700 sm:text-base sm:leading-7">
+                  Khóa học video: edu.fireant.vn/course/amibroker-basic
+                </p>
+                <p class="mt-3 text-sm leading-6 text-ink-700 sm:text-base sm:leading-7">
+                  Tài liệu kĩ thuật: help.fireant.vn/projects/fireant-metakit/intro
+                </p>
+              </div>
+            </div>
+          </article>
+
+          <article class="faq-item rounded-[1.5rem] border border-white/70 bg-white p-5 shadow-soft sm:rounded-[1.7rem] sm:p-6" data-open="false">
+            <button class="faq-trigger flex w-full items-center justify-between gap-6 text-left" type="button">
+              <span class="text-base font-semibold text-ink-900 sm:text-lg">Có cần tài khoản hoặc quyền truy cập để dùng đầy đủ tính năng không?</span>
+              <span class="faq-icon-plus text-[1.65rem] font-light leading-none text-brand-600 transition-transform sm:text-3xl">+</span>
+            </button>
+            <div class="faq-answer mt-4">
+              <div>
+                <p class="text-sm leading-6 text-ink-700 sm:text-base sm:leading-7">
+                  Có. Để kết nối và khai thác dữ liệu từ FireAnt Metakit, bạn cần đăng nhập tài khoản FireAnt đã kích hoạt gói hội viên Thiết yếu hoặc Chuyên nghiệp.
+                </p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="tai-ngay" class="overflow-hidden px-4 pb-20 pt-6 sm:px-6 lg:px-8 lg:pb-24">
+      <div class="relative mx-auto flex max-w-7xl flex-col items-center gap-6 rounded-[2.5rem] border border-brand-100/80 bg-[linear-gradient(180deg,#fffefe_0%,#fff7f7_100%)] px-8 py-14 text-center shadow-[0_30px_90px_-54px_rgba(127,29,29,0.28)] sm:gap-8 sm:px-10 md:py-20">
+        <div class="pointer-events-none absolute inset-0 rounded-[2.5rem] bg-[linear-gradient(90deg,rgba(239,68,68,0.26)_0%,rgba(239,68,68,0.12)_4%,rgba(255,255,255,0)_11%,rgba(255,255,255,0)_89%,rgba(239,68,68,0.12)_96%,rgba(239,68,68,0.26)_100%),linear-gradient(0deg,rgba(239,68,68,0.34)_0%,rgba(239,68,68,0.18)_8%,rgba(255,255,255,0)_26%)] shadow-[inset_18px_0_52px_-28px_rgba(239,68,68,0.52),inset_-18px_0_52px_-28px_rgba(239,68,68,0.52),inset_0_-24px_68px_-30px_rgba(239,68,68,0.62)]"></div>
+
+        <div class="relative z-10 inline-flex items-center rounded-full border border-brand-100 bg-white px-4 py-2 text-sm font-semibold text-brand-700 shadow-[0_14px_36px_-26px_rgba(239,68,68,0.35)]">
+          Final CTA
+        </div>
+
+        <h2 class="relative z-10 max-w-4xl font-display text-4xl font-bold tracking-[-0.04em] text-ink-900 sm:text-5xl">
+          Tải về và bắt đầu phân tích nhanh hơn trên AmiBroker
+        </h2>
+
+        <p class="relative z-10 max-w-2xl text-lg leading-8 text-ink-700">
+          Nhanh cài, nhanh cập nhật, nhanh vào việc với một bộ công cụ được thiết kế cho đúng nhu cầu của người dùng AmiBroker.
+        </p>
+
+        <div class="relative z-10 mt-2 grid w-full max-w-3xl gap-3 md:grid-cols-2 md:gap-4">
+          <a
+            href="assets/Download%20Metakit/FireAnt_MetaKit_Install_32bit.exe"
+            download="FireAnt_MetaKit_Install_32bit.exe"
+            class="group rounded-[0.7rem] bg-[linear-gradient(135deg,#d51446_0%,#c8103c_100%)] px-4 py-4 text-white shadow-[0_24px_48px_-28px_rgba(213,20,70,0.5)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_30px_58px_-28px_rgba(213,20,70,0.58)] sm:px-6 sm:py-5"
+          >
+            <div class="flex items-center justify-center gap-3 text-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white/92 transition group-hover:translate-y-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16" />
+              </svg>
+              <span class="text-base font-extrabold uppercase tracking-[0.03em] sm:text-xl">METAKIT 32BIT</span>
+            </div>
+            <p class="mt-2 text-xs font-semibold italic text-white/88 sm:mt-3 sm:text-sm">
+              Cho AmiBroker 32bit và MetaStock
+            </p>
+          </a>
+
+          <a
+            href="assets/Download%20Metakit/FireAnt_MetaKit_Install_64bit.exe"
+            download="FireAnt_MetaKit_Install_64bit.exe"
+            class="group rounded-[0.7rem] bg-[linear-gradient(135deg,#2563eb_0%,#1d4ed8_100%)] px-4 py-4 text-white shadow-[0_24px_48px_-28px_rgba(37,99,235,0.42)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_30px_58px_-28px_rgba(37,99,235,0.52)] sm:px-6 sm:py-5"
+          >
+            <div class="flex items-center justify-center gap-3 text-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white/92 transition group-hover:translate-y-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16" />
+              </svg>
+              <span class="text-base font-extrabold uppercase tracking-[0.03em] sm:text-xl">METAKIT 64BIT</span>
+            </div>
+            <p class="mt-2 text-xs font-semibold italic text-white/88 sm:mt-3 sm:text-sm">
+              Cho AmiBroker 64bit
+            </p>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="relative overflow-hidden border-t border-brand-100/80 bg-[linear-gradient(180deg,#fffdfd_0%,#fff4f6_100%)] px-4 py-12 text-sm text-ink-700 sm:px-6 lg:px-8">
+    <div class="absolute inset-0 opacity-60" style="background-image:linear-gradient(rgba(244,63,94,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(244,63,94,0.06) 1px, transparent 1px); background-size: 36px 36px;"></div>
+    <div class="absolute inset-y-0 right-0 w-[28rem] bg-[radial-gradient(circle_at_center,rgba(244,63,94,0.09),rgba(244,63,94,0)_68%)]"></div>
+
+    <div class="relative mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.25fr_0.95fr] lg:gap-16">
+      <div class="max-w-xl">
+        <div class="flex items-center gap-4">
+          <img src="assets/logo/fireant-logo-horizontal.png" alt="FireAnt" class="h-10 w-auto">
+        </div>
+        <p class="mt-6 text-lg leading-8 text-ink-700">
+          Công cụ phân tích và hỗ trợ giao dịch hàng đầu Việt Nam cho <span class="whitespace-nowrap">nhà đầu tư</span> cá nhân và tổ chức.
+        </p>
+        <p class="mt-6 text-sm text-ink-700/70">
+          © 2026 FireAnt Media. All rights reserved
+        </p>
+      </div>
+
+      <div class="lg:justify-self-end">
+        <h3 class="font-display text-3xl font-bold text-ink-900">Liên hệ</h3>
+        <div class="mt-6 space-y-5">
+          <div class="flex items-start gap-4">
+            <span class="mt-0.5 flex h-10 w-10 items-center justify-center rounded-2xl border border-brand-100 bg-white/80 text-brand-600 shadow-soft">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.243-4.243a8 8 0 1111.313 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </span>
+            <p class="max-w-md text-base leading-7 text-ink-700">
+              Tầng 6 Tòa ADG, số 37 Lê Văn Thiêm, phường<br><span class="whitespace-nowrap">Thanh Xuân</span>, Hà Nội
+            </p>
+          </div>
+
+          <div class="flex items-center gap-4">
+            <span class="flex h-10 w-10 items-center justify-center rounded-2xl border border-brand-100 bg-white/80 text-brand-600 shadow-soft">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M22 16.92v3a2 2 0 01-2.18 2 19.86 19.86 0 01-8.66-3.08 19.5 19.5 0 01-6-6A19.86 19.86 0 012.08 4.18 2 2 0 014.06 2h3a2 2 0 012 1.72l.34 2.74a2 2 0 01-.57 1.66L7.1 9.91a16 16 0 007 7l1.79-1.79a2 2 0 011.66-.57l2.74.34A2 2 0 0122 16.92z" />
+              </svg>
+            </span>
+            <p class="text-base font-medium text-ink-700">1900.633.543</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.body.classList.add("js-ready");
+
+    const menuToggle = document.getElementById("menu-toggle");
+    const mobileNav = document.getElementById("mobile-nav");
+
+    menuToggle?.addEventListener("click", () => {
+      const expanded = menuToggle.getAttribute("aria-expanded") === "true";
+      menuToggle.setAttribute("aria-expanded", String(!expanded));
+      mobileNav.classList.toggle("hidden");
+    });
+
+    document.querySelectorAll("#mobile-nav a").forEach((link) => {
+      link.addEventListener("click", () => {
+        mobileNav.classList.add("hidden");
+        menuToggle.setAttribute("aria-expanded", "false");
+      });
+    });
+
+    document.querySelectorAll(".faq-trigger").forEach((trigger) => {
+      trigger.addEventListener("click", () => {
+        const item = trigger.closest(".faq-item");
+        const isOpen = item.getAttribute("data-open") === "true";
+
+        document.querySelectorAll(".faq-item").forEach((faq) => {
+          faq.setAttribute("data-open", "false");
+        });
+
+        item.setAttribute("data-open", String(!isOpen));
+      });
+    });
+
+    const setupHeroTextReveal = (element, options = {}) => {
+      if (!element || element.dataset.revealReady === "true") return;
+
+      const delay = options.delay ?? 0;
+      const stagger = options.stagger ?? 70;
+      let revealIndex = 0;
+
+      const processNode = (node) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          const text = node.textContent || "";
+
+          if (!text.trim()) return;
+
+          const fragment = document.createDocumentFragment();
+          const segments = text.split(/(\s+)/);
+
+          segments.forEach((segment) => {
+            if (!segment.trim()) {
+              fragment.append(document.createTextNode(segment));
+              return;
+            }
+
+            const span = document.createElement("span");
+            span.className = "fa-text-reveal-segment inline-block whitespace-pre";
+            span.style.setProperty("--fa-reveal-delay", `${delay}ms`);
+            span.style.setProperty("--fa-reveal-index", String(revealIndex));
+            span.style.setProperty("--fa-reveal-stagger", `${stagger}ms`);
+            span.textContent = segment;
+            fragment.append(span);
+            revealIndex += 1;
+          });
+
+          node.parentNode?.replaceChild(fragment, node);
+          return;
+        }
+
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          Array.from(node.childNodes).forEach(processNode);
+        }
+      };
+
+      Array.from(element.childNodes).forEach(processNode);
+      element.classList.add("fa-text-reveal");
+      element.dataset.revealReady = "true";
+    };
+
+    setupHeroTextReveal(document.querySelector(".hero-text-reveal"), { delay: 80, stagger: 70 });
+    setupHeroTextReveal(document.querySelectorAll(".hero-text-reveal")[1], { delay: 420, stagger: 42 });
+
+    const revealTargets = [
+      ...document.querySelectorAll(
+        [
+          "main > section:not(:first-of-type) > .mx-auto",
+          "#van-de article",
+          "#tinh-nang article",
+          "#huong-dan .grid > *",
+          "#faq .faq-item",
+          "footer .relative.mx-auto > *"
+        ].join(",")
+      )
+    ];
+
+    revealTargets.forEach((element, index) => {
+      element.classList.add("reveal-on-scroll");
+      element.style.setProperty("--reveal-delay", `${(index % 3) * 80}ms`);
+    });
+
+    if ("IntersectionObserver" in window && revealTargets.length) {
+      const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.18,
+        rootMargin: "0px 0px -8% 0px"
+      });
+
+      revealTargets.forEach((target) => revealObserver.observe(target));
+    } else {
+      revealTargets.forEach((target) => target.classList.add("is-visible"));
+    }
+
+    const trustCounters = document.querySelectorAll(".trust-counter");
+
+    const formatCounterValue = (value) => {
+      return new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(value);
+    };
+
+    const animateCounter = (counter) => {
+      if (counter.dataset.animated === "true") return;
+      counter.dataset.animated = "true";
+
+      const target = Number(counter.dataset.target || 0);
+      const suffix = counter.dataset.suffix || "";
+      const fadeDuration = 550;
+      const totalDuration = 2000;
+      const steps = 25;
+      const stepDuration = totalDuration / steps;
+
+      counter.classList.add("is-visible");
+
+      window.setTimeout(() => {
+        let index = 0;
+        let previousValue = 0;
+
+        const tick = () => {
+          const normalizedStep = (index + 1) / steps;
+          const easedProgress = 1 - Math.pow(1 - normalizedStep, 2.6);
+          let nextValue = Math.round(target * easedProgress);
+
+          if (index === steps - 1) {
+            nextValue = target;
+          } else if (nextValue <= previousValue) {
+            nextValue = previousValue + Math.max(1, Math.round(target * 0.006));
+          }
+
+          previousValue = Math.min(nextValue, target);
+          counter.textContent = `${formatCounterValue(previousValue)}${suffix}`;
+
+          index += 1;
+
+          if (index < steps) {
+            window.setTimeout(tick, stepDuration);
+          }
+        };
+
+        tick();
+      }, fadeDuration);
+    };
+
+    if ("IntersectionObserver" in window && trustCounters.length) {
+      const trustObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            animateCounter(entry.target);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.55 });
+
+      trustCounters.forEach((counter) => trustObserver.observe(counter));
+    } else {
+      trustCounters.forEach((counter) => animateCounter(counter));
+    }
+  </script>
+</body>
+</html>
