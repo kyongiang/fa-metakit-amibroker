@@ -1608,6 +1608,106 @@
     } else {
       trustCounters.forEach((counter) => animateCounter(counter));
     }
+
+    /* =========================================================
+       Auto redirect về Final CTA (#tai-ngay)
+       Kích hoạt khi người dùng mở trang bằng các "link tải":
+         - Hash:  #tai-ngay | #tai-ve | #download | #cta | #final-cta ...
+         - Path:  /download | /tai-ngay | /tai-ve | /download-metakit ...
+         - Query: ?download | ?download=1 | ?cta=final | ?goto=tai-ngay ...
+       ========================================================= */
+    const finalCta = document.getElementById("tai-ngay");
+
+    if (finalCta) {
+      const CTA_HASH_ALIASES = [
+        "tai-ngay", "tai-ve", "tai", "tai-mien-phi",
+        "download", "download-metakit", "cta", "final-cta"
+      ];
+      const CTA_PATH_ALIASES = [
+        "tai-ngay", "tai-ve", "tai",
+        "download", "download-metakit", "metakit-download"
+      ];
+      const CTA_QUERY_KEYS = ["download", "tai", "cta", "goto", "redirect", "action"];
+      const CTA_QUERY_VALUES = [
+        "", "1", "true", "yes", "on",
+        "tai", "tai-ngay", "tai-ve", "download", "cta", "final", "final-cta"
+      ];
+
+      const normalize = (value) => {
+        try {
+          return decodeURIComponent(value || "").trim().toLowerCase();
+        } catch (error) {
+          return (value || "").trim().toLowerCase();
+        }
+      };
+
+      const matchesHash = (hash) => CTA_HASH_ALIASES.includes(normalize(hash).replace(/^#/, ""));
+
+      const matchesPath = () => {
+        const segment = normalize(window.location.pathname)
+          .replace(/\/+$/, "")
+          .split("/")
+          .pop()
+          .replace(/\.html?$/, "");
+
+        return CTA_PATH_ALIASES.includes(segment);
+      };
+
+      const matchesQuery = () => {
+        const params = new URLSearchParams(window.location.search);
+
+        return CTA_QUERY_KEYS.some((key) => {
+          if (!params.has(key)) return false;
+          return CTA_QUERY_VALUES.includes(normalize(params.get(key)));
+        });
+      };
+
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      const scrollToFinalCta = (behavior) => {
+        const header = document.querySelector("header");
+        const offset = (header?.offsetHeight || 0) + 12;
+        const top = finalCta.getBoundingClientRect().top + window.pageYOffset - offset;
+
+        window.scrollTo({
+          top: Math.max(top, 0),
+          behavior: prefersReducedMotion ? "auto" : behavior
+        });
+      };
+
+      const revealFinalCta = () => {
+        finalCta.querySelectorAll(".reveal-on-scroll").forEach((element) => {
+          element.classList.add("is-visible");
+        });
+      };
+
+      const redirectToFinalCta = (behavior = "smooth") => {
+        revealFinalCta();
+
+        // Chuẩn hoá URL về #tai-ngay để người dùng share lại vẫn đúng vị trí
+        if (normalize(window.location.hash).replace(/^#/, "") !== "tai-ngay") {
+          window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}#tai-ngay`);
+        }
+
+        requestAnimationFrame(() => scrollToFinalCta(behavior));
+      };
+
+      if (matchesHash(window.location.hash) || matchesPath() || matchesQuery()) {
+        // Chặn cú nhảy mặc định của trình duyệt để tự canh theo header sticky
+        redirectToFinalCta("auto");
+
+        // Ảnh/font tải xong có thể làm dịch layout -> canh lại lần cuối
+        window.addEventListener("load", () => scrollToFinalCta("auto"), { once: true });
+      }
+
+      // Người dùng dán link dạng #download khi trang đã mở
+      window.addEventListener("hashchange", () => {
+        const hash = normalize(window.location.hash).replace(/^#/, "");
+        if (hash !== "tai-ngay" && matchesHash(hash)) {
+          redirectToFinalCta("smooth");
+        }
+      });
+    }
   </script>
 </body>
 </html>
